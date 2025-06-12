@@ -5,7 +5,9 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "../faiss",
-                "../hnswlib"
+                "../hnswlib",
+                "../rapidjson/include",
+                "../rocksdb/include"
             ],
             "defines": [
                 "_DEBUG",

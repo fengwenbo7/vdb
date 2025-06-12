@@ -1,5 +1,6 @@
 #include "index_factory.h"
 #include <faiss/IndexFlat.h>
+#include <faiss/IndexIDMap.h>
 
 IndexFactory global_index_factory;
 
@@ -20,7 +21,8 @@ void IndexFactory::init(IndexType type,int dim,int num_data,MetricType metric=Me
     switch (type)
     {
     case IndexType::FLAT:
-        index_map_[type]=new FaissIndex(new faiss::IndexFlat(dim,faiss_metric));
+        //faiss::IndexIDMap添加index到自定义id的映射，支持添加数据时指定id
+        index_map_[type]=new FaissIndex(new faiss::IndexIDMap(new faiss::IndexFlat(dim,faiss_metric)));
         break;
     case IndexType::HNSW:
         index_map_[type]=new HNSWLIBIndex(dim,num_data,16,200);
