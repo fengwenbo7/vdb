@@ -1,6 +1,7 @@
 #include "index_factory.h"
 #include <faiss/IndexFlat.h>
 #include <faiss/IndexIDMap.h>
+#include "filter_index.h"
 
 IndexFactory global_index_factory;
 
@@ -26,6 +27,9 @@ void IndexFactory::init(IndexType type,int dim,int num_data,MetricType metric=Me
         break;
     case IndexType::HNSW:
         index_map_[type]=new HNSWLIBIndex(dim,num_data,16,200);
+        break;
+    case IndexType::FILTER:
+        index_map_[type]=new FilterIndex();
         break;
     default:
         break;

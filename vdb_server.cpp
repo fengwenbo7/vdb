@@ -6,4 +6,5 @@ int main(){
     int num_data=1000;
     global_index_factory->init(IndexFactory::IndexType::FLAT,dim);
     global_index_factory->init(IndexFactory::IndexType::HNSW,dim,num_data);
+    global_index_factory->init(IndexFactory::IndexType::FILTER);
 }

@@ -1,6 +1,16 @@
 #pragma once
 #include <vector>
 #include "hnswlib/hnswlib.h"
+#include "roaring/roaring.h"
+
+class RoaringBitmapIDFilter:public hnswlib::BaseFilterFunctor{
+public:
+    RoaringBitmapIDFilter(const roaring_bitmap_t* bitmap){}
+    bool operator()(hnswlib::labeltype id) { return roaring_bitmap_contains(bitmap_,static_cast<uint32_t>(id)); }
+
+private:
+    const roaring_bitmap_t* bitmap_;
+};
 
 class HNSWLIBIndex{
 public:
@@ -17,7 +27,7 @@ public:
     /// @param k top K
     /// @param ef_search 搜索时候选数，即查询时每层保留的候选节点数 
     /// @return 
-    std::pair<std::vector<long>,std::vector<float>> search_vectors(const std::vector<float>& query,int k,int ef_search=50);
+    std::pair<std::vector<int64_t>,std::vector<float>> search_vectors(const std::vector<float>& query,int k,const roaring_bitmap_t* bitmap=nullptr,int ef_search=50);
 
 private:
     hnswlib::HierarchicalNSW<float>* index_;

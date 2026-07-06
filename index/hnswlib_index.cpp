@@ -9,11 +9,17 @@ void HNSWLIBIndex::insert_vectors(const std::vector<float>& data,uint64_t label)
     index_->addPoint(data.data(),label);
 }
 
-std::pair<std::vector<long>,std::vector<float>> HNSWLIBIndex::search_vectors(const std::vector<float>& query,int k,int ef_search){
+std::pair<std::vector<int64_t>,std::vector<float>> HNSWLIBIndex::search_vectors(const std::vector<float>& query,int k,const roaring_bitmap_t* bitmap,int ef_search){
     index_->setEf(ef_search);
-    auto result = index_->searchKnn(query.data(),k);
 
-    std::vector<long> indices(k);
+    //位图是否传入
+    RoaringBitmapIDFilter* selector=nullptr;
+    if(bitmap!=nullptr){
+        selector=new RoaringBitmapIDFilter(bitmap);
+    }
+    auto result = index_->searchKnn(query.data(),k,selector);//searchKnn函数有过滤器的参数
+
+    std::vector<int64_t> indices(k);
     std::vector<float> distances(k);
     for(int i=0;i<k;i++){
         auto item=result.top();
